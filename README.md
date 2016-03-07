@@ -1,7 +1,7 @@
 # DrawOnImage
 
 ### class BackgroundView:
-- scaling a image (here: photo from the camera roll) in the original ratio if it is to big
+- scaling a image (here: photo from the camera roll) in the original ratio if it is too big
 - landscape and portrait support
 
 ### class OverlayView:
