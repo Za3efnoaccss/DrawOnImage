@@ -103,8 +103,12 @@ class DrawOnImage(ui.View):
         self.config_button(self.scv_btn_undo, 'btn_undo', (381,0,127,self.button_height), 'Undo')
         self.scv_btn_color = ui.Button()
         self.config_button(self.scv_btn_color, 'btn_color', (508,0,127,self.button_height), 'Color')
+        self.scv_btn_path_width = ui.Button()
+        self.config_button(self.scv_btn_path_width, 'btn_path_width', (635,0,127,self.button_height), 'Width')
         self.colors = ['white', 'grey', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow']
         self.color_nr = 2    #red
+        self.path_widths = [3, 6, 12, 24]
+        self.path_w_nr = 1	    #6
         self.scv_btn_color.tint_color = self.colors[self.color_nr]
         self.set_button_actions()
         
@@ -112,6 +116,7 @@ class DrawOnImage(ui.View):
         self.olview.frame=(0,self.button_height,width,height-self.button_height)
         self.olview.flex = 'WH'
         self.olview.color = self.colors[self.color_nr]
+        self.olview.path_width = self.path_widths[self.path_w_nr]
         self.add_subview(self.olview)
         self.image = None
         self.present('full_screen')
@@ -178,6 +183,13 @@ class DrawOnImage(ui.View):
         self.scv_btn_color.tint_color = self.colors[self.color_nr]
         self.olview.color = self.colors[self.color_nr]
     
+    def btn_path_width(self, sender):
+        if self.path_w_nr < len(self.path_widths) - 1:
+            self.path_w_nr += 1
+        else:
+            self.path_w_nr = 0
+        self.olview.path_width = self.path_widths[self.path_w_nr]
+    
     def set_button_actions(self):
         for subview in self.scv.subviews:
           if isinstance(subview, ui.Button):
@@ -200,6 +212,7 @@ class OverlayView(ui.View):
         self.border_color = 'red'    #frame for drawing canvas
         self.border_width = 1
         self.color = None
+        self.path_width = None
         self.bgview_image = False
         self.scr_orientation = None    #delete path needs orientation and/or screen size
     
@@ -211,7 +224,7 @@ class OverlayView(ui.View):
             self.image = None            #...delete path
             self.paths = []
             self.path = None
-        if self.path:                    #draw path
+        if self.path:                    #draw current path
             ui.set_color(self.color)
             self.path.stroke()
         if self.image:
@@ -224,18 +237,21 @@ class OverlayView(ui.View):
             self.paths.pop()
             path_count -= 1
             self.image = None
-            width, height = self.width, self.height    #screen size
-            with ui.ImageContext(width, height) as ctx:
-                for i in xrange(0, path_count):
-                    ui.set_color(self.color)
-                    self.paths[i].stroke()
-                self.image = ctx.get_image()
+            for i in xrange(0, path_count):
+                old_img = self.image
+                width, height = self.paths[i][1]
+                with ui.ImageContext(width, height) as ctx:
+                    if old_img:
+                        old_img.draw(0,0,width,height)
+                    ui.set_color(self.paths[i][2])
+                    self.paths[i][0].stroke()
+                    self.image = ctx.get_image()
             self.set_needs_display()
     
     def touch_began(self, touch):
         x, y = touch.location
         self.path = ui.Path()
-        self.path.line_width = 6
+        self.path.line_width = self.path_width
         self.path.line_join_style = ui.LINE_JOIN_ROUND
         self.path.line_cap_style = ui.LINE_CAP_ROUND
         self.path.move_to(x, y)
@@ -247,16 +263,16 @@ class OverlayView(ui.View):
         self.set_needs_display()
 
     def touch_ended(self, touch):
-        self.paths.append(self.path)
         width, height = self.width, self.height    #screen size
+        self.paths.append((self.path, (width, height), self.color))
         old_img = self.image
         with ui.ImageContext(width, height) as ctx:
             if old_img:
-                old_img.draw(0,0,self.width,self.height)
+                old_img.draw(0,0,width,height)    # previous paths
             if self.path:
                 ui.set_color(self.color)
                 self.path.stroke()
-                self.image = ctx.get_image()
+                self.image = ctx.get_image()    # add path to image
         self.path = None
         self.layout()
         self.set_needs_display()
