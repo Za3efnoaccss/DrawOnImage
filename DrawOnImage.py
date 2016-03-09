@@ -72,6 +72,7 @@ class DrawOnImage(ui.View):
     def __init__(self):
         self.name = 'DrawOnImage'
         self.button_height = 50
+        button_width = 127
         width, height = ui.get_screen_size()
         self.frame = (0,0,width,height)
         self.touch_enabled = False
@@ -94,17 +95,17 @@ class DrawOnImage(ui.View):
         #just add two lines for each button and don't forget the action method with the same name
         #config_button(button, name, frame, title)
         self.scv_btn_quit = ui.Button()
-        self.config_button(self.scv_btn_quit, 'btn_quit', (0,0,127,self.button_height), 'Quit')
+        self.config_button(self.scv_btn_quit, 'btn_quit', (0,0,button_width,self.button_height), 'Quit')
         self.scv_btn_load = ui.Button()
-        self.config_button(self.scv_btn_load, 'btn_load', (127,0,127,self.button_height), 'Load')
+        self.config_button(self.scv_btn_load, 'btn_load', (1*button_width,0,button_width,self.button_height), 'Load')
         self.scv_btn_save = ui.Button()
-        self.config_button(self.scv_btn_save, 'btn_save', (254,0,127,self.button_height), 'Save')
+        self.config_button(self.scv_btn_save, 'btn_save', (2*button_width,0,button_width,self.button_height), 'Save')
         self.scv_btn_undo = ui.Button()
-        self.config_button(self.scv_btn_undo, 'btn_undo', (381,0,127,self.button_height), 'Undo')
+        self.config_button(self.scv_btn_undo, 'btn_undo', (3*button_width,0,button_width,self.button_height), 'Undo')
         self.scv_btn_color = ui.Button()
-        self.config_button(self.scv_btn_color, 'btn_color', (508,0,127,self.button_height), 'Color')
+        self.config_button(self.scv_btn_color, 'btn_color', (4*button_width,0,button_width,self.button_height), 'Color')
         self.scv_btn_path_width = ui.Button()
-        self.config_button(self.scv_btn_path_width, 'btn_path_width', (635,0,127,self.button_height), 'Width')
+        self.config_button(self.scv_btn_path_width, 'btn_path_width', (5*button_width,0,button_width,self.button_height), 'Width')
         self.colors = ['white', 'grey', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow']
         self.color_nr = 2    #red
         self.path_widths = [3, 6, 12, 24]
