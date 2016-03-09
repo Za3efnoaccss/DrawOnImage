@@ -150,7 +150,8 @@ class DrawOnImage(ui.View):
     def btn_load(self, sender):
         self.bgview.image = ui.Image.from_data(photos.pick_image(raw_data=True))
         self.bgview.layout()
-        self.name = 'Size: ' + str(self.bgview.image.size)
+        self.name = 'Size: ' + str(int(self.bgview.image.size[0])) + ', ' + str(int(self.bgview.image.size[1]))
+        self.olview.org_size = self.bgview.image.size
         self.layout()
         self.bgview.set_needs_display()
         if self.bgview.image:
@@ -214,6 +215,7 @@ class OverlayView(ui.View):
         self.color = None
         self.path_width = None
         self.bgview_image = False
+        self.org_size = None
         self.scr_orientation = None    #delete path needs orientation and/or screen size
     
     def layout(self):
@@ -258,7 +260,18 @@ class OverlayView(ui.View):
         
     def touch_moved(self, touch):
         x, y = touch.location
-        self.fwv.name = 'x=' + str(x) + ', y=' + str(y)
+        if self.org_size:
+            x1 = (self.org_size[0] / self.width) * x
+            y1 = (self.org_size[1] / self.height) * y
+            if x1 < 0:
+                x1 = 0
+            elif x1 > self.org_size[0]:
+                x1 = self.org_size[0]
+            if y1 < 0:
+                y1 = 0
+            elif y1 > self.org_size[1]:
+                y1 = self.org_size[1]
+            self.fwv.name = 'x=' + str(int(x1)) + ', y=' + str(int(y1))
         self.path.line_to(x, y)
         self.set_needs_display()
 
