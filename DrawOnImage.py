@@ -72,7 +72,7 @@ class DrawOnImage(ui.View):
     def __init__(self):
         self.name = 'DrawOnImage'
         self.button_height = 50
-        button_width = 127
+        self.button_width = 127
         width, height = ui.get_screen_size()
         self.frame = (0,0,width,height)
         self.touch_enabled = False
@@ -95,17 +95,17 @@ class DrawOnImage(ui.View):
         #just add two lines for each button and don't forget the action method with the same name
         #config_button(button, name, frame, title)
         self.scv_btn_quit = ui.Button()
-        self.config_button(self.scv_btn_quit, 'btn_quit', (0,0,button_width,self.button_height), 'Quit')
+        self.config_button(self.scv_btn_quit, 'btn_quit', (0,0,self.button_width,self.button_height), 'Quit')
         self.scv_btn_load = ui.Button()
-        self.config_button(self.scv_btn_load, 'btn_load', (1*button_width,0,button_width,self.button_height), 'Load')
+        self.config_button(self.scv_btn_load, 'btn_load', (1*self.button_width,0,self.button_width,self.button_height), 'Load')
         self.scv_btn_save = ui.Button()
-        self.config_button(self.scv_btn_save, 'btn_save', (2*button_width,0,button_width,self.button_height), 'Save')
+        self.config_button(self.scv_btn_save, 'btn_save', (2*self.button_width,0,self.button_width,self.button_height), 'Save')
         self.scv_btn_undo = ui.Button()
-        self.config_button(self.scv_btn_undo, 'btn_undo', (3*button_width,0,button_width,self.button_height), 'Undo')
+        self.config_button(self.scv_btn_undo, 'btn_undo', (3*self.button_width,0,self.button_width,self.button_height), 'Undo')
         self.scv_btn_color = ui.Button()
-        self.config_button(self.scv_btn_color, 'btn_color', (4*button_width,0,button_width,self.button_height), 'Color')
+        self.config_button(self.scv_btn_color, 'btn_color', (4*self.button_width,0,self.button_width,self.button_height), 'Color')
         self.scv_btn_path_width = ui.Button()
-        self.config_button(self.scv_btn_path_width, 'btn_path_width', (5*button_width,0,button_width,self.button_height), 'Width')
+        self.config_button(self.scv_btn_path_width, 'btn_path_width', (5*self.button_width,0,self.button_width,self.button_height), '')
         self.colors = ['white', 'grey', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow']
         self.color_nr = 2    #red
         self.path_widths = [3, 6, 12, 24]
@@ -118,9 +118,23 @@ class DrawOnImage(ui.View):
         self.olview.flex = 'WH'
         self.olview.color = self.colors[self.color_nr]
         self.olview.path_width = self.path_widths[self.path_w_nr]
+        self.path_width()
         self.add_subview(self.olview)
         self.image = None
         self.present('full_screen')
+
+    def path_width(self):
+        with ui.ImageContext(self.button_width, self.button_height) as ctx:
+            ui.set_color(self.colors[self.color_nr])
+            path = ui.Path()
+            path.line_width = self.path_widths[self.path_w_nr]
+            path.line_join_style = ui.LINE_JOIN_ROUND
+            path.line_cap_style = ui.LINE_CAP_ROUND
+            path.move_to(20,self.button_height/2)
+            path.line_to(107,self.button_height/2)
+            path.stroke()
+            image = ctx.get_image()
+            self.scv_btn_path_width.background_image = image
 
     def layout(self):
         if self.width > self.height:
@@ -184,6 +198,7 @@ class DrawOnImage(ui.View):
             self.color_nr = 0
         self.scv_btn_color.tint_color = self.colors[self.color_nr]
         self.olview.color = self.colors[self.color_nr]
+        self.path_width()
     
     def btn_path_width(self, sender):
         if self.path_w_nr < len(self.path_widths) - 1:
@@ -191,6 +206,7 @@ class DrawOnImage(ui.View):
         else:
             self.path_w_nr = 0
         self.olview.path_width = self.path_widths[self.path_w_nr]
+        self.path_width()
     
     def set_button_actions(self):
         for subview in self.scv.subviews:
