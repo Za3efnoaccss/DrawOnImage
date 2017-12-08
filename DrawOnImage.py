@@ -256,7 +256,7 @@ class OverlayView(ui.View):
             self.paths.pop()
             path_count -= 1
             self.image = None
-            for i in xrange(0, path_count):
+            for i in range(0, path_count):
                 old_img = self.image
                 width, height = self.paths[i][1]
                 with ui.ImageContext(width, height) as ctx:
