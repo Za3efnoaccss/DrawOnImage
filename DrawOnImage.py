@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import ui, os, sys, photos, scene
-import Image, cStringIO
+import Image, io
 
 class BackgroundView(ui.View):
     def __init__(self,button_height):
@@ -180,8 +180,8 @@ class DrawOnImage(ui.View):
         fo_image = fo_image.resize((width,height), Image.ANTIALIAS)
         fo_image = fo_image.convert('RGBA')
         pixel = fo_image.load()
-        for y in xrange(0,fo_image.size[1]):
-            for x in xrange(0,fo_image.size[0]):
+        for y in range(0,fo_image.size[1]):
+            for x in range(0,fo_image.size[0]):
                 if pixel[x,y] == (0,0,0,255):
                     pixel[x,y] = (0,0,0,0)
         bg_image.paste(fo_image, (0,0), fo_image)    #skip this if you want only the overlay image
@@ -215,7 +215,7 @@ class DrawOnImage(ui.View):
 
     #from pythonista forum
     def ui2pil(self, image):
-        mem = cStringIO.StringIO(image.to_png())
+        mem = io.BytesIO(image.to_png())
         out = Image.open(mem)
         out.load()
         mem.close()
