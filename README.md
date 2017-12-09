@@ -19,4 +19,4 @@ You can't use a black path because it's the png background color. Any suggestion
 <br />
 Tested with Pythonista 3.1 for iOS (Python 3.5)<br />
 <br />
-![alt text](https://raw.githubusercontent.com/humberry/DrawOnImage/master/to/image.png)
+![alt text](https://raw.githubusercontent.com/humberry/DrawOnImage/branch/image.png)
