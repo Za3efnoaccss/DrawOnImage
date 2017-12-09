@@ -15,3 +15,6 @@
    
 Please be patient after pressing the save button, because several tasks have to be done (ui2png, png2alpha, paste background and overlay). Closing automatically after processing.
 You can't use a black path because it's the png background color. Any suggestions?
+
+<br />
+Tested with Pythonista 3.1 for iOS (Python 3.5)<br />
